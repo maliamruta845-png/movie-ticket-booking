@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Movie Booking System</title>
+
+<style>
+
+body{
+    background:#111;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+
+#movieList{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+
+.movie-card{
+
+    background:#222;
+    width:220px;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 0 10px red;
+
+}
+
+
+.movie-card img{
+
+    width:100%;
+    height:200px;
+
+}
+
+
+button{
+
+    background:red;
+    color:white;
+    border:none;
+    padding:10px;
+    cursor:pointer;
+    border-radius:5px;
+
+}
+
+
+#booking{
+
+    background:#222;
+    margin:20px;
+    padding:20px;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>🎬 Movie Booking System</h1>
+
+
+<div id="movieList"></div>
+
+
+
+<h2>Booking Details</h2>
+
+
+<div id="booking">
+
+No booking yet
+
+</div>
+
+
+<h2>
+Total Cost : ₹
+<span id="total">0</span>
+</h2>
+
+
+<button id="saveBtn">
+Save Booking
+</button>
+
+
+
+
+<script>
+
+
+// ARRAY OF OBJECTS
+
+const movies=[
+
+{
+id:1,
+name:"Avengers",
+price:250,
+image:"https://via.placeholder.com/200"
+},
+
+
+{
+id:2,
+name:"Avatar",
+price:300,
+image:"https://via.placeholder.com/200"
+},
+
+
+{
+id:3,
+name:"Batman",
+price:200,
+image:"https://via.placeholder.com/200"
+}
+
+];
+
+
+
+
+// booking array
+
+let bookings=[];
+
+
+
+// DOM
+
+const movieList =
+document.getElementById("movieList");
+
+
+const booking =
+document.getElementById("booking");
+
+
+const total =
+document.getElementById("total");
+
+
+
+
+
+// ASYNC CONCEPT
+
+async function loadMovies(){
+
+
+let data = await fetchMovies();
+
+
+displayMovies(data);
+
+
+}
+
+
+
+
+function fetchMovies(){
+
+return new Promise(resolve=>{
+
+
+setTimeout(()=>{
+
+resolve(movies);
+
+
+},1000);
+
+
+});
+
+
+}
+
+
+
+
+
+
+// DISPLAY MOVIE CARDS
+
+function displayMovies(data){
+
+
+
+data.forEach(movie=>{
+
+
+movieList.innerHTML += `
+
+
+<div class="movie-card">
+
+
+<img src="${movie.image}">
+
+
+<h2>${movie.name}</h2>
+
+
+<p>
+Price ₹${movie.price}
+</p>
+
+
+<button onclick="bookTicket(${movie.id})">
+
+Book Ticket
+
+</button>
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+// EVENT + FUNCTION
+
+function bookTicket(id){
+
+
+
+let selectedMovie =
+movies.find(movie=>movie.id===id);
+
+
+
+bookings.push(selectedMovie);
+
+
+
+showBooking();
+
+
+
+}
+
+
+
+
+
+// SHOW BOOKING
+
+function showBooking(){
+
+
+
+booking.innerHTML="";
+
+
+let amount=0;
+
+
+
+bookings.forEach(movie=>{
+
+
+amount += movie.price;
+
+
+
+booking.innerHTML += `
+
+<p>
+🎟 ${movie.name}
+-
+₹${movie.price}
+
+</p>
+
+
+`;
+
+
+
+});
+
+
+
+total.innerHTML=amount;
+
+
+}
+
+
+
+
+
+
+
+// LOCAL STORAGE EVENT
+
+document
+.getElementById("saveBtn")
+.addEventListener(
+"click",
+()=>{
+
+
+localStorage.setItem(
+
+"movieBooking",
+
+JSON.stringify(bookings)
+
+);
+
+
+alert("Booking Saved Successfully");
+
+
+});
+
+
+
+
+
+
+
+
+// LOAD SAVED DATA
+
+
+window.onload=function(){
+
+
+
+let saved =
+localStorage.getItem("movieBooking");
+
+
+
+if(saved){
+
+
+bookings =
+JSON.parse(saved);
+
+
+showBooking();
+
+
+}
+
+
+
+loadMovies();
+
+
+
+}
+
+
+
+
+</script>
+
+
+</body>
+</html>
